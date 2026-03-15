@@ -226,7 +226,7 @@
 
 <script>
   // ── החלף את ה-URL הזה בכתובת שתקבל מ-Apps Script לאחר פריסה ──
-  var APPS_SCRIPT_URL = "https://script.google.com/a/macros/inno-tech.io/s/AKfycbzDqw8X8cPZWjdK6IOmX_KK648hU5tL8h3B438PAKB0jtxCshEJdcWwS8txgupdGajXeg/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/a/macros/inno-tech.io/s/AKfycbwrCbtsu4fwDamKPW76XDDUWtRdZnxTLbvho8f01YuIh0onKUx3OqqF26PJ7rFddwOhww/exec";
 
   document.addEventListener('change', function(e) {
     var inp = e.target;
@@ -287,23 +287,18 @@
     errEl.style.display = 'none';
 
     try {
-          var formData = new FormData();
-          formData.append('data', JSON.stringify(collectData()));
-          var res = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          body: formData,
-});
+      var formData = new FormData();
+      formData.append('data', JSON.stringify(collectData()));
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors',
       });
-      var json = await res.json();
-      if (json.success) {
-        document.getElementById('mainForm').style.display = 'none';
-        document.getElementById('successScreen').style.display = 'block';
-        document.getElementById('progressFill').style.width = '100%';
-        document.getElementById('progressLabel').textContent = 'הושלם!';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        throw new Error(json.error || 'שגיאה לא ידועה');
-      }
+      document.getElementById('mainForm').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('progressLabel').textContent = 'הושלם!';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       errEl.style.display = 'block';
       btn.disabled = false;
