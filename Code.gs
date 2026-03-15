@@ -1,45 +1,30 @@
 // ─── הגדרות ───────────────────────────────────────────────
 var TO_EMAIL   = "ronench@inno-tech.io";
-var SHEET_NAME = "תשובות";  // שם הגיליון — אפשר לשנות
+var SHEET_NAME = "תשובות";
 
-// ─── עמודות בסדר ──────────────────────────────────────────
+// ─── עמודות ───────────────────────────────────────────────
 var COLUMNS = [
-  "תאריך ושעה",
-  "שם מלא",
-  "שם החברה / המיזם",
-  "שנת הקמה",
-  "אתר / עמוד רשת",
-  "ארץ פעילות",
-  "תיאור המיזם",
-  "תחום עיקרי",
-  "פירוט תחום אחר",
-  "שלב המיזם",
-  "מטרות מימון",
-  "פירוט מטרה אחרת",
-  "סדר גודל מימון",
-  "אזורי עניין",
-  "פירוט אזור אחר",
-  "שיתופי פעולה בינלאומיים",
-  "בקשות קודמות",
-  "דדליינים קרובים",
-  "הערות נוספות"
+  "תאריך ושעה","שם מלא","שם החברה / המיזם","שנת הקמה",
+  "אתר / עמוד רשת","ארץ פעילות","תיאור המיזם","תחום עיקרי",
+  "פירוט תחום אחר","שלב המיזם","מטרות מימון","פירוט מטרה אחרת",
+  "סדר גודל מימון","אזורי עניין","פירוט אזור אחר",
+  "שיתופי פעולה בינלאומיים","בקשות קודמות","דדליינים קרובים","הערות נוספות"
 ];
 
-// ─── POST handler ──────────────────────────────────────────
-function doPost(e) {
-  var output = ContentService.createTextOutput();
-  output.setMimeType(ContentService.MimeType.JSON);
-
+// ─── GET handler ──────────────────────────────────────────
+function doGet(e) {
   try {
-    var data = JSON.parse(e.parameter.data);
+    var data = JSON.parse(decodeURIComponent(e.parameter.data));
     saveToSheet(data);
     sendEmail(data);
-    output.setContent(JSON.stringify({ success: true }));
-  } catch (err) {
-    output.setContent(JSON.stringify({ success: false, error: err.message }));
+  } catch(err) {
+    // שגיאה — ממשיכים בכל מקרה
   }
 
-  return output;
+  // מחזירים דף HTML ריק שסוגר את עצמו
+  return HtmlService.createHtmlOutput(
+    '<script>window.close();</script><p>תודה!</p>'
+  );
 }
 
 // ─── שמירה בגיליון ────────────────────────────────────────
@@ -47,7 +32,6 @@ function saveToSheet(d) {
   var ss    = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME);
 
-  // צור גיליון + כותרות אם לא קיים
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
     sheet.appendRow(COLUMNS);
@@ -58,56 +42,33 @@ function saveToSheet(d) {
     sheet.setFrozenRows(1);
   }
 
-  var now = Utilities.formatDate(
-    new Date(), "Asia/Jerusalem", "dd/MM/yyyy HH:mm"
-  );
+  var now = Utilities.formatDate(new Date(), "Asia/Jerusalem", "dd/MM/yyyy HH:mm");
 
   sheet.appendRow([
     now,
-    d.name         || "",
-    d.company      || "",
-    d.year         || "",
-    d.website      || "",
-    d.country      || "",
-    d.description  || "",
-    arrToStr(d.sector),
-    d.sector_other || "",
-    d.stage        || "",
-    arrToStr(d.goal),
-    d.goal_other   || "",
-    d.funding      || "",
-    arrToStr(d.region),
-    d.region_other || "",
-    d.intl         || "",
-    d.past_grants  || "",
-    d.deadline     || "",
-    d.notes        || ""
+    d.name || "", d.company || "", d.year || "", d.website || "",
+    d.country || "", d.description || "",
+    arrToStr(d.sector), d.sector_other || "", d.stage || "",
+    arrToStr(d.goal), d.goal_other || "", d.funding || "",
+    arrToStr(d.region), d.region_other || "", d.intl || "",
+    d.past_grants || "", d.deadline || "", d.notes || ""
   ]);
 }
 
 // ─── שליחת מייל ───────────────────────────────────────────
 function sendEmail(d) {
-  var subject = "📋 שאלון מענקים חדש – " + (d.company || d.name || "מיזם חדש");
+  var subject = "שאלון מענקים חדש - " + (d.company || d.name || "מיזם חדש");
 
   var rows = [
-    ["שם מלא",                   d.name],
-    ["שם החברה / המיזם",         d.company],
-    ["שנת הקמה",                 d.year],
-    ["אתר / עמוד רשת",          d.website],
-    ["ארץ פעילות",               d.country],
-    ["תיאור המיזם",              d.description],
-    ["תחום עיקרי",               arrToStr(d.sector)],
-    ["פירוט תחום",               d.sector_other],
-    ["שלב המיזם",                d.stage],
-    ["מטרות מימון",              arrToStr(d.goal)],
-    ["פירוט מטרה",               d.goal_other],
-    ["סדר גודל מימון",           d.funding],
-    ["אזורי עניין",              arrToStr(d.region)],
-    ["פירוט אזור",               d.region_other],
-    ["שיתופי פעולה בינ\"ל",     d.intl],
-    ["בקשות קודמות",             d.past_grants],
-    ["דדליינים קרובים",          d.deadline],
-    ["הערות נוספות",             d.notes]
+    ["שם מלא", d.name], ["שם החברה / המיזם", d.company],
+    ["שנת הקמה", d.year], ["אתר / עמוד רשת", d.website],
+    ["ארץ פעילות", d.country], ["תיאור המיזם", d.description],
+    ["תחום עיקרי", arrToStr(d.sector)], ["פירוט תחום", d.sector_other],
+    ["שלב המיזם", d.stage], ["מטרות מימון", arrToStr(d.goal)],
+    ["פירוט מטרה", d.goal_other], ["סדר גודל מימון", d.funding],
+    ["אזורי עניין", arrToStr(d.region)], ["פירוט אזור", d.region_other],
+    ["שיתוף פעולה בינלאומי", d.intl], ["בקשות קודמות", d.past_grants],
+    ["דדליינים קרובים", d.deadline], ["הערות נוספות", d.notes]
   ];
 
   var tableRows = rows
@@ -119,24 +80,22 @@ function sendEmail(d) {
         '</tr>';
     }).join("");
 
-  var submittedAt = Utilities.formatDate(
-    new Date(), "Asia/Jerusalem", "EEEE, dd/MM/yyyy 'בשעה' HH:mm"
-  );
+  var submittedAt = Utilities.formatDate(new Date(), "Asia/Jerusalem", "dd/MM/yyyy HH:mm");
 
   var html =
-    '<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f7f4;font-family:Arial,sans-serif;direction:rtl;">' +
-    '<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f7f4;padding:30px 20px;"><tr><td>' +
+    '<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8"></head>' +
+    '<body style="margin:0;padding:0;background:#f4f7f4;font-family:Arial,sans-serif;direction:rtl;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 20px;"><tr><td>' +
     '<table width="600" align="center" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;">' +
     '<tr><td style="background:linear-gradient(135deg,#1D9E75,#0F6E56);padding:28px 32px;text-align:right;">' +
-    '<p style="margin:0;font-size:11px;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">Inno-Tech Grants</p>' +
-    '<h1 style="margin:6px 0 0;font-size:22px;color:#fff;font-family:Arial,sans-serif;">שאלון התאמה חדש התקבל</h1>' +
+    '<p style="margin:0;font-size:11px;color:rgba(255,255,255,0.7);">Inno-Tech Grants</p>' +
+    '<h1 style="margin:6px 0 0;font-size:22px;color:#fff;">שאלון התאמה חדש התקבל</h1>' +
     '</td></tr>' +
-    '<tr><td style="padding:20px 32px 8px;"><p style="margin:0;font-size:15px;color:#333;font-family:Arial,sans-serif;">מיזם חדש מחפש מענקים! הטופס הוגש ב-<strong>' + submittedAt + '</strong>:</p></td></tr>' +
+    '<tr><td style="padding:20px 32px 8px;"><p style="margin:0;font-size:15px;color:#333;">הטופס הוגש ב-<strong>' + submittedAt + '</strong></p></td></tr>' +
     '<tr><td style="padding:12px 32px 24px;"><table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e0f0ea;border-radius:8px;overflow:hidden;">' +
-    tableRows +
-    '</table></td></tr>' +
+    tableRows + '</table></td></tr>' +
     '<tr><td style="background:#f0faf6;padding:14px 32px;text-align:center;border-top:1px solid #e0f0ea;">' +
-    '<p style="margin:0;font-size:12px;color:#888;font-family:Arial,sans-serif;">נשלח דרך מערכת שאלון המענקים של Inno-Tech</p>' +
+    '<p style="margin:0;font-size:12px;color:#888;">נשלח דרך מערכת שאלון המענקים של Inno-Tech</p>' +
     '</td></tr></table></td></tr></table></body></html>';
 
   GmailApp.sendEmail(TO_EMAIL, subject, "", { htmlBody: html });
