@@ -226,7 +226,7 @@
 
 <script>
   // ── החלף את ה-URL הזה בכתובת שתקבל מ-Apps Script לאחר פריסה ──
-  var APPS_SCRIPT_URL = "https://script.google.com/a/macros/inno-tech.io/s/AKfycbwrCbtsu4fwDamKPW76XDDUWtRdZnxTLbvho8f01YuIh0onKUx3OqqF26PJ7rFddwOhww/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/a/macros/inno-tech.io/s/AKfycbyJ3SikYSMHeHUDgbcgI4T9S156rGtGkTxDzj5wTPyJLN5vBHCsMZsOYRso0RGMArCr/exec";
 
   document.addEventListener('change', function(e) {
     var inp = e.target;
@@ -287,18 +287,24 @@
     errEl.style.display = 'none';
 
     try {
-      var formData = new FormData();
-      formData.append('data', JSON.stringify(collectData()));
-      await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        body: formData,
-        mode: 'no-cors',
-      });
-      document.getElementById('mainForm').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'block';
-      document.getElementById('progressFill').style.width = '100%';
-      document.getElementById('progressLabel').textContent = 'הושלם!';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      var encoded = encodeURIComponent(JSON.stringify(collectData()));
+      var url = APPS_SCRIPT_URL + '?data=' + encoded;
+
+      // פותחים iframe נסתר — עוקף CORS לחלוטין
+      var iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = url;
+      document.body.appendChild(iframe);
+
+      // מחכים שנייה ומציגים הצלחה
+      setTimeout(function() {
+        document.getElementById('mainForm').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+        document.getElementById('progressFill').style.width = '100%';
+        document.getElementById('progressLabel').textContent = 'הושלם!';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1500);
+
     } catch (err) {
       errEl.style.display = 'block';
       btn.disabled = false;
