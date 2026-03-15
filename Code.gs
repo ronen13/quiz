@@ -31,7 +31,7 @@ function doPost(e) {
   output.setMimeType(ContentService.MimeType.JSON);
 
   try {
-    var data = JSON.parse(e.postData.contents);
+    var data = JSON.parse(e.parameter.data);
     saveToSheet(data);
     sendEmail(data);
     output.setContent(JSON.stringify({ success: true }));
