@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>שאלון התאמה – מציאת מענקים וקרנות</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark:  #0A5C42;
+      --green-mid:   #1D9E75;
+      --green-light: #5DCAA5;
+      --green-pale:  #E1F5EE;
+      --green-faint: #F2FBF7;
+      --text:        #1A1A1A;
+      --text-muted:  #6B7B74;
+      --border:      #D8EDE5;
+      --radius:      10px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Assistant', sans-serif; background: #F5F9F7; color: var(--text); min-height: 100vh; direction: rtl; }
+
+    .hero { background: var(--green-dark); padding: 56px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 20% 50%, rgba(29,158,117,0.25) 0%, transparent 70%), radial-gradient(ellipse 50% 60% at 80% 30%, rgba(93,202,165,0.15) 0%, transparent 60%); }
+    .hero-inner { position: relative; max-width: 620px; margin: 0 auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; font-size: 12px; color: rgba(255,255,255,0.85); padding: 5px 14px; margin-bottom: 20px; }
+    .hero h1 { font-family: 'Frank Ruhl Libre', serif; font-size: clamp(26px,5vw,38px); font-weight: 700; color: #fff; line-height: 1.25; margin-bottom: 14px; }
+    .hero p { font-size: 16px; color: rgba(255,255,255,0.78); line-height: 1.7; margin-bottom: 24px; }
+    .hero-meta { display: flex; justify-content: center; gap: 24px; font-size: 13px; color: rgba(255,255,255,0.65); flex-wrap: wrap; }
+
+    .progress-wrap { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 24px; position: sticky; top: 0; z-index: 100; }
+    .progress-row { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+    .progress-bar-bg { flex: 1; height: 5px; background: var(--green-pale); border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green-mid), var(--green-light)); border-radius: 3px; width: 0%; transition: width 0.4s ease; }
+    .progress-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; min-width: 80px; text-align: left; }
+
+    .form-container { max-width: 720px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    .section { background: #fff; border: 1px solid var(--border); border-radius: 14px; margin-bottom: 20px; overflow: hidden; transition: box-shadow 0.2s; }
+    .section:hover { box-shadow: 0 4px 20px rgba(10,92,66,0.06); }
+    .section-header { display: flex; align-items: center; gap: 12px; padding: 18px 22px; border-bottom: 1px solid var(--green-pale); background: var(--green-faint); }
+    .section-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--green-pale); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .section-title-text { font-size: 15px; font-weight: 700; color: var(--green-dark); }
+    .section-body { padding: 22px; }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } }
+
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-label { display: flex; align-items: baseline; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 7px; }
+    .field-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--green-pale); color: var(--green-dark); font-size: 11px; font-weight: 700; flex-shrink: 0; }
+
+    input[type="text"], textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 13px; font-family: 'Assistant', sans-serif; font-size: 14px; color: var(--text); background: #fff; direction: rtl; transition: border-color 0.2s, box-shadow 0.2s; }
+    input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(29,158,117,0.12); }
+    textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+    .check-group { display: flex; flex-direction: column; gap: 7px; }
+    .check-item { display: flex; align-items: center; gap: 10px; padding: 9px 13px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: background 0.15s, border-color 0.15s; user-select: none; }
+    .check-item:hover { background: var(--green-faint); border-color: var(--green-light); }
+    .check-item.selected { background: var(--green-pale); border-color: var(--green-mid); }
+    .check-item input { width: 16px; height: 16px; accent-color: var(--green-mid); cursor: pointer; flex-shrink: 0; }
+    .check-item span { font-size: 14px; color: var(--text); }
+    .other-reveal { display: none; margin-top: 8px; padding-right: 26px; }
+
+    .submit-wrap { text-align: center; padding: 8px 0 0; }
+    .submit-btn { background: var(--green-dark); color: #fff; border: none; border-radius: 50px; padding: 14px 48px; font-family: 'Assistant', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+    .submit-btn:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .submit-btn:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+    .submit-note { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+    .error-msg { display: none; background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; border-radius: var(--radius); padding: 12px 16px; font-size: 14px; margin-top: 14px; text-align: center; }
+
+    .success-screen { display: none; text-align: center; padding: 60px 24px 80px; max-width: 480px; margin: 0 auto; }
+    .success-circle { width: 72px; height: 72px; border-radius: 50%; background: var(--green-pale); border: 2px solid var(--green-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }
+    .success-screen h2 { font-family: 'Frank Ruhl Libre', serif; font-size: 26px; color: var(--green-dark); margin-bottom: 14px; }
+    .success-screen p { font-size: 15px; color: var(--text-muted); line-height: 1.8; }
+
+    footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); background: #fff; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Inno-Tech · מענקים וקרנות</div>
+    <h1>שאלון התאמה אישי<br>למציאת מענקים וקרנות</h1>
+    <p>כדי להתאים לך רשימה מדויקת של מענקים, קרנות ותכניות תמיכה,<br>נשמח לקבל כמה פרטים על המיזם שלך.</p>
+    <div class="hero-meta">
+      <span>⏱ 3 דקות בלבד</span>
+      <span>📋 15 שאלות</span>
+      <span>🔒 פרטים מאובטחים</span>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-row">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 מתוך 15</div>
+  </div>
+</div>
+
+<div class="form-container">
+  <form id="mainForm" novalidate>
+
+    <div class="section">
+      <div class="section-header"><div class="section-icon">👤</div><div class="section-title-text">פרטי יזם / חברה</div></div>
+      <div class="section-body">
+        <div class="grid2">
+          <div class="field"><div class="field-label"><span class="field-num">1</span> שם מלא</div><input type="text" name="name" placeholder="ישראל ישראלי" /></div>
+          <div class="field"><div class="field-label"><span class="field-num">2</span> שם החברה / המיזם</div><input type="text" name="company" placeholder="שם המיזם" /></div>
+          <div class="field"><div class="field-label"><span class="field-num">3</span> שנת הקמה (אם קיימת)</div><input type="text" name="year" placeholder="2023" /></div>
+          <div class="field"><div class="field-label"><span class="field-num">4</span> אתר / עמוד רשת (אם יש)</div><input type="text" name="website" placeholder="www.example.com" /></div>
+        </div>
+        <div class="field"><div class="field-label"><span class="field-num">5</span> ארץ פעילות עיקרית</div><input type="text" name="country" placeholder="ישראל" /></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="section-icon">💡</div><div class="section-title-text">מידע על המיזם</div></div>
+      <div class="section-body">
+        <div class="field"><div class="field-label"><span class="field-num">6</span> תאר בקצרה את המיזם שלך</div><textarea name="description" placeholder="מה אתם מפתחים / מציעים..."></textarea></div>
+        <div class="field">
+          <div class="field-label"><span class="field-num">7</span> באיזה תחום עיקרי פועל המיזם?</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="sector" value="טכנולוגיה / חדשנות"><span>טכנולוגיה / חדשנות</span></label>
+            <label class="check-item"><input type="checkbox" name="sector" value="בריאות / ביוטק"><span>בריאות / ביוטק</span></label>
+            <label class="check-item"><input type="checkbox" name="sector" value="חקלאות / אגריטק"><span>חקלאות / אגריטק</span></label>
+            <label class="check-item"><input type="checkbox" name="sector" value="אנרגיה / קיימות"><span>אנרגיה / קיימות</span></label>
+            <label class="check-item"><input type="checkbox" name="sector" value="חינוך / אימפקט חברתי"><span>חינוך / אימפקט חברתי</span></label>
+            <label class="check-item"><input type="checkbox" name="sector" value="תחבורה / לוגיסטיקה"><span>תחבורה / לוגיסטיקה</span></label>
+            <label class="check-item" data-reveal="sector-other"><input type="checkbox" name="sector" value="אחר"><span>אחר – נא לפרט</span></label>
+            <div class="other-reveal" id="sector-other"><input type="text" name="sector_other" placeholder="פרט כאן..." /></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span class="field-num">8</span> באיזה שלב נמצא המיזם כיום?</div>
+          <div class="check-group">
+            <label class="check-item"><input type="radio" name="stage" value="רעיון / שלב מוקדם"><span>רעיון / שלב מוקדם</span></label>
+            <label class="check-item"><input type="radio" name="stage" value="אבטיפוס / פיתוח"><span>אבטיפוס / פיתוח</span></label>
+            <label class="check-item"><input type="radio" name="stage" value="השקה / מכירות ראשונות"><span>השקה / מכירות ראשונות</span></label>
+            <label class="check-item"><input type="radio" name="stage" value="צמיחה / הרחבה לשווקים חדשים"><span>צמיחה / הרחבה לשווקים חדשים</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="section-icon">🎯</div><div class="section-title-text">מטרות המימון</div></div>
+      <div class="section-body">
+        <div class="field">
+          <div class="field-label"><span class="field-num">9</span> מה המטרה המרכזית לשמה אתם מחפשים מענקים?</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="goal" value="מחקר ופיתוח"><span>מחקר ופיתוח</span></label>
+            <label class="check-item"><input type="checkbox" name="goal" value="גיוס עובדים / הרחבת הצוות"><span>גיוס עובדים / הרחבת הצוות</span></label>
+            <label class="check-item"><input type="checkbox" name="goal" value="חדירה לשווקים חדשים"><span>חדירה לשווקים חדשים</span></label>
+            <label class="check-item"><input type="checkbox" name="goal" value="רכישת ציוד / טכנולוגיה"><span>רכישת ציוד / טכנולוגיה</span></label>
+            <label class="check-item"><input type="checkbox" name="goal" value="פעילות שיווקית / עסקית"><span>פעילות שיווקית / עסקית</span></label>
+            <label class="check-item" data-reveal="goal-other"><input type="checkbox" name="goal" value="אחר"><span>אחר – נא לפרט</span></label>
+            <div class="other-reveal" id="goal-other"><input type="text" name="goal_other" placeholder="פרט כאן..." /></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span class="field-num">10</span> סדר גודל המימון המבוקש</div>
+          <div class="check-group">
+            <label class="check-item"><input type="radio" name="funding" value="עד 50,000 ₪"><span>עד 50,000 ₪</span></label>
+            <label class="check-item"><input type="radio" name="funding" value="50,000–250,000 ₪"><span>50,000 – 250,000 ₪</span></label>
+            <label class="check-item"><input type="radio" name="funding" value="250,000–1,000,000 ₪"><span>250,000 – 1,000,000 ₪</span></label>
+            <label class="check-item"><input type="radio" name="funding" value="מעל 1,000,000 ₪"><span>מעל 1,000,000 ₪</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="section-icon">🌍</div><div class="section-title-text">אזורי עניין ומיקוד</div></div>
+      <div class="section-body">
+        <div class="field">
+          <div class="field-label"><span class="field-num">11</span> מאילו אזורים תרצו לקבל מידע על מענקים?</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="region" value="ישראל"><span>ישראל</span></label>
+            <label class="check-item"><input type="checkbox" name="region" value="אירופה"><span>אירופה</span></label>
+            <label class="check-item"><input type="checkbox" name="region" value='ארה"ב'><span>ארה"ב</span></label>
+            <label class="check-item"><input type="checkbox" name="region" value="אפריקה"><span>אפריקה</span></label>
+            <label class="check-item" data-reveal="region-other"><input type="checkbox" name="region" value="אחר"><span>אחר – נא לציין</span></label>
+            <div class="other-reveal" id="region-other"><input type="text" name="region_other" placeholder="ציין כאן..." /></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span class="field-num">12</span> פתוחים לשיתופי פעולה בינלאומיים?</div>
+          <div class="check-group">
+            <label class="check-item"><input type="radio" name="intl" value="כן"><span>כן</span></label>
+            <label class="check-item"><input type="radio" name="intl" value="לא"><span>לא</span></label>
+            <label class="check-item"><input type="radio" name="intl" value="אולי – תלוי בהזדמנות"><span>אולי – תלוי בהזדמנות</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="section-icon">📋</div><div class="section-title-text">פרטים משלימים</div></div>
+      <div class="section-body">
+        <div class="field"><div class="field-label"><span class="field-num">13</span> הגשתם בעבר בקשות למענקים? אם כן, לאילו גופים?</div><textarea name="past_grants" placeholder="כתוב כאן..."></textarea></div>
+        <div class="field"><div class="field-label"><span class="field-num">14</span> יש דדליין קרוב או תכנית שאתם מתכננים להגיש אליה?</div><textarea name="deadline" placeholder="כתוב כאן..."></textarea></div>
+        <div class="field"><div class="field-label"><span class="field-num">15</span> הערות נוספות שחשוב שנדע</div><textarea name="notes" placeholder="כתוב כאן..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">שלח שאלון ←</button>
+      <p class="submit-note">הפרטים שלך משמשים לצורך התאמת מענקים בלבד</p>
+      <div class="error-msg" id="errorMsg">אירעה שגיאה בשליחה. אנא נסה שנית.</div>
+    </div>
+  </form>
+
+  <div class="success-screen" id="successScreen">
+    <div class="success-circle">✓</div>
+    <h2>תודה שמילאת את השאלון!</h2>
+    <p>מיד לאחר עיבוד המידע נתחיל לשלוח לך רשימות מותאמות אישית של מענקים והזדמנויות מימון שיכולות לקדם את המיזם שלך.</p>
+  </div>
+</div>
+
+<footer>© Inno-Tech · כל הזכויות שמורות</footer>
+
+<script>
+  // ── החלף את ה-URL הזה בכתובת שתקבל מ-Apps Script לאחר פריסה ──
+  var APPS_SCRIPT_URL = "https://script.google.com/a/macros/inno-tech.io/s/AKfycbzeqlZjQcySjP3D-bBE0Dp2jgXRphBZqwrOfDMSFTsax_Vpm4vApfZyvlvYePzLGXNTXg/exec";
+
+  document.addEventListener('change', function(e) {
+    var inp = e.target;
+    if (inp.type === 'checkbox' || inp.type === 'radio') {
+      if (inp.type === 'radio') {
+        document.querySelectorAll('input[name="' + inp.name + '"]').forEach(function(r) {
+          r.closest('.check-item').classList.toggle('selected', r.checked);
+        });
+      } else {
+        inp.closest('.check-item').classList.toggle('selected', inp.checked);
+      }
+      var label = inp.closest('.check-item[data-reveal]');
+      if (label) {
+        var el = document.getElementById(label.dataset.reveal);
+        if (el) el.style.display = inp.checked ? 'block' : 'none';
+      }
+      updateProgress();
+    }
+  });
+
+  document.querySelectorAll('input[type="text"], textarea').forEach(function(el) {
+    el.addEventListener('input', updateProgress);
+  });
+
+  function updateProgress() {
+    var textInputs = document.querySelectorAll('input[type="text"]:not(.other-reveal input), textarea');
+    var checkGroups = ['sector','goal','region'];
+    var radioGroups = ['stage','funding','intl'];
+    var filled = 0, total = 0;
+    textInputs.forEach(function(i) {
+      if (!i.closest('.other-reveal')) { total++; if (i.value.trim()) filled++; }
+    });
+    checkGroups.forEach(function(g) { total++; if (document.querySelector('input[name="' + g + '"]:checked')) filled++; });
+    radioGroups.forEach(function(g) { total++; if (document.querySelector('input[name="' + g + '"]:checked')) filled++; });
+    var pct = Math.round((filled / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = filled + ' מתוך ' + total;
+  }
+
+  function collectData() {
+    var fd = new FormData(document.getElementById('mainForm'));
+    var data = {};
+    fd.forEach(function(v, k) {
+      if (data[k]) {
+        data[k] = Array.isArray(data[k]) ? data[k].concat(v) : [data[k], v];
+      } else {
+        data[k] = v;
+      }
+    });
+    return data;
+  }
+
+  async function submitForm() {
+    var btn = document.getElementById('submitBtn');
+    var errEl = document.getElementById('errorMsg');
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+    errEl.style.display = 'none';
+
+    try {
+      var res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(collectData()),
+      });
+      var json = await res.json();
+      if (json.success) {
+        document.getElementById('mainForm').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+        document.getElementById('progressFill').style.width = '100%';
+        document.getElementById('progressLabel').textContent = 'הושלם!';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        throw new Error(json.error || 'שגיאה לא ידועה');
+      }
+    } catch (err) {
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'שלח שאלון ←';
+    }
+  }
+</script>
+</body>
+</html>
