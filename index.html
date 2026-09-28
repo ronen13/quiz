@@ -30,6 +30,40 @@
     .hero p { font-size: 16px; color: rgba(255,255,255,0.78); line-height: 1.7; margin-bottom: 24px; }
     .hero-meta { display: flex; justify-content: center; gap: 24px; font-size: 13px; color: rgba(255,255,255,0.65); flex-wrap: wrap; }
 
+    /* ── כרטיס העלאת one-pager ── */
+    .upload-section { max-width: 720px; margin: 0 auto; padding: 24px 20px 0; }
+    .upload-card { background: #fff; border: 1.5px dashed var(--green-light); border-radius: 14px; padding: 20px 22px; }
+    .upload-card-inner { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+    .upload-icon { font-size: 28px; line-height: 1; flex-shrink: 0; }
+    .upload-text h3 { font-size: 16px; color: var(--green-dark); margin-bottom: 5px; }
+    .upload-text p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    .upload-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input[type="file"] { font-family: 'Assistant', sans-serif; font-size: 13px; color: var(--text-muted); flex: 1; min-width: 180px; }
+    .upload-btn { background: var(--green-mid); color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-family: 'Assistant', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+    .upload-btn:hover:not(:disabled) { background: var(--green-dark); }
+    .upload-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .upload-status { margin-top: 10px; font-size: 13px; min-height: 1.3em; line-height: 1.6; }
+    .upload-status.active { color: var(--green-mid); }
+    .upload-status.success { color: var(--green-dark); font-weight: 600; }
+    .upload-status.error { color: #B91C1C; }
+
+    /* ── פאנל אישור: מה זוהה מהמסמך ── */
+    .review-panel { background: #fff; border: 1.5px solid var(--green-light); border-radius: 14px; margin-top: 16px; overflow: hidden; }
+    .review-head { background: var(--green-faint); padding: 14px 20px; border-bottom: 1px solid var(--border); }
+    .review-head h4 { font-size: 14px; color: var(--green-dark); margin-bottom: 3px; }
+    .review-head p { font-size: 12px; color: var(--text-muted); }
+    .review-list { padding: 8px 20px; max-height: 340px; overflow-y: auto; }
+    .review-row { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--green-faint); }
+    .review-row:last-child { border-bottom: none; }
+    .review-label { flex: 0 0 150px; font-size: 12.5px; font-weight: 700; color: var(--green-dark); }
+    .review-value { flex: 1; font-size: 13.5px; color: var(--text); line-height: 1.6; white-space: pre-wrap; }
+    .review-empty { padding: 18px 20px; font-size: 13px; color: var(--text-muted); text-align: center; }
+    .review-actions { display: flex; gap: 10px; padding: 14px 20px; background: var(--green-faint); border-top: 1px solid var(--border); }
+    .review-confirm-btn { flex: 1; background: var(--green-dark); color: #fff; border: none; border-radius: 8px; padding: 10px 16px; font-family: 'Assistant', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .review-confirm-btn:hover { background: var(--green-mid); }
+    .review-cancel-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 10px 16px; font-family: 'Assistant', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .review-cancel-btn:hover { border-color: #B91C1C; color: #B91C1C; }
+
     .progress-wrap { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 24px; position: sticky; top: 0; z-index: 100; }
     .progress-row { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
     .progress-bar-bg { flex: 1; height: 5px; background: var(--green-pale); border-radius: 3px; overflow: hidden; }
@@ -56,6 +90,8 @@
     input[type="text"], textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 13px; font-family: 'Assistant', sans-serif; font-size: 14px; color: var(--text); background: #fff; direction: rtl; transition: border-color 0.2s, box-shadow 0.2s; }
     input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(29,158,117,0.12); }
     textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+    input[type="text"].autofilled, textarea.autofilled { border-color: var(--green-light); background: var(--green-faint); }
 
     .check-group { display: flex; flex-direction: column; gap: 7px; }
     .check-item { display: flex; align-items: center; gap: 10px; padding: 9px 13px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: background 0.15s, border-color 0.15s; user-select: none; }
@@ -91,6 +127,35 @@
       <span>⏱ 3 דקות בלבד</span>
       <span>📋 15 שאלות</span>
       <span>🔒 פרטים מאובטחים</span>
+    </div>
+  </div>
+</div>
+
+<div class="upload-section">
+  <div class="upload-card">
+    <div class="upload-card-inner">
+      <div class="upload-icon">📄</div>
+      <div class="upload-text">
+        <h3>יש לך one-pager מוכן?</h3>
+        <p>העלה קובץ PDF או תמונה של המצגת/one-pager של המיזם, ואנחנו נמלא עבורך את השאלון אוטומטית. תוכל לבדוק ולתקן כל שדה לפני השליחה.</p>
+      </div>
+    </div>
+    <div class="upload-row">
+      <input type="file" id="onePagerInput" accept=".pdf,.png,.jpg,.jpeg,.webp" />
+      <button type="button" class="upload-btn" id="analyzeBtn" onclick="analyzeOnePager()">נתח ומלא אוטומטית</button>
+    </div>
+    <div class="upload-status" id="uploadStatus"></div>
+  </div>
+
+  <div class="review-panel" id="reviewPanel" style="display:none;">
+    <div class="review-head">
+      <h4>📋 זה מה שזיהינו מהמסמך שהעלית</h4>
+      <p>בדוק את הפרטים — בלחיצה על "מלא את הטופס" הם יוזנו לשדות למטה, ועדיין תוכל לערוך כל שדה לפני השליחה</p>
+    </div>
+    <div class="review-list" id="reviewList"></div>
+    <div class="review-actions">
+      <button type="button" class="review-confirm-btn" onclick="confirmAutofill()">✓ מלא את הטופס עם הפרטים האלה</button>
+      <button type="button" class="review-cancel-btn" onclick="cancelReview()">ביטול</button>
     </div>
   </div>
 </div>
@@ -228,6 +293,9 @@
   // ── החלף את ה-URL הזה בכתובת שתקבל מ-Apps Script לאחר פריסה ──
   var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3QosH3ny41gcosepVnw_sY9OnXH6PiDK8IOyNERFN6kOnQ-bWqjE2dgZXACMMh4Xz/exec";
 
+  // ── החלף את ה-URL הזה בכתובת שירות ה-Render של quiz-analyzer לאחר פריסה ──
+  var ANALYZE_URL = "https://one-pager-d8do.onrender.com";
+
   document.addEventListener('change', function(e) {
     var inp = e.target;
     if (inp.type === 'checkbox' || inp.type === 'radio') {
@@ -309,6 +377,177 @@
       errEl.style.display = 'block';
       btn.disabled = false;
       btn.textContent = 'שלח שאלון ←';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // ── מילוי אוטומטי מ-one-pager ──
+  // ═══════════════════════════════════════════════════════════
+
+  var pendingExtractedData = null;
+
+  var FIELD_LABELS = {
+    name: 'שם מלא',
+    company: 'שם החברה / המיזם',
+    year: 'שנת הקמה',
+    website: 'אתר / עמוד רשת',
+    country: 'ארץ פעילות עיקרית',
+    description: 'תיאור המיזם',
+    sector: 'תחום עיקרי',
+    sector_other: 'פירוט תחום אחר',
+    stage: 'שלב המיזם',
+    goal: 'מטרות מימון',
+    goal_other: 'פירוט מטרה אחרת',
+    funding: 'סדר גודל מימון מבוקש',
+    region: 'אזורי עניין',
+    region_other: 'פירוט אזור אחר',
+    intl: 'שיתופי פעולה בינלאומיים',
+    past_grants: 'בקשות מענקים קודמות',
+    deadline: 'דדליין קרוב',
+    notes: 'הערות נוספות'
+  };
+  var FIELD_ORDER = ['name','company','year','website','country','description',
+    'sector','sector_other','stage','goal','goal_other','funding',
+    'region','region_other','intl','past_grants','deadline','notes'];
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function hasValue(v) {
+    if (Array.isArray(v)) return v.length > 0;
+    return v !== undefined && v !== null && String(v).trim() !== '';
+  }
+
+  function renderReviewPanel(data) {
+    var listEl = document.getElementById('reviewList');
+    var panel = document.getElementById('reviewPanel');
+    var rowsHtml = '';
+
+    FIELD_ORDER.forEach(function(key) {
+      var val = data[key];
+      if (!hasValue(val)) return;
+      var displayVal = Array.isArray(val) ? val.join(', ') : val;
+      rowsHtml += '<div class="review-row">' +
+        '<div class="review-label">' + escHtml(FIELD_LABELS[key] || key) + '</div>' +
+        '<div class="review-value">' + escHtml(displayVal) + '</div>' +
+        '</div>';
+    });
+
+    if (!rowsHtml) {
+      listEl.innerHTML = '<div class="review-empty">לא הצלחנו לזהות פרטים ברורים מהמסמך — אפשר למלא את הטופס ידנית</div>';
+      panel.querySelector('.review-actions').style.display = 'none';
+    } else {
+      listEl.innerHTML = rowsHtml;
+      panel.querySelector('.review-actions').style.display = 'flex';
+    }
+
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function confirmAutofill() {
+    if (!pendingExtractedData) return;
+    populateForm(pendingExtractedData);
+    document.getElementById('reviewPanel').style.display = 'none';
+    var statusEl = document.getElementById('uploadStatus');
+    statusEl.textContent = '✓ הטופס מולא — בדוק ותקן כל שדה לפני השליחה';
+    statusEl.className = 'upload-status success';
+    pendingExtractedData = null;
+    document.getElementById('mainForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function cancelReview() {
+    document.getElementById('reviewPanel').style.display = 'none';
+    pendingExtractedData = null;
+    document.getElementById('uploadStatus').textContent = '';
+    document.getElementById('uploadStatus').className = 'upload-status';
+  }
+
+  function setTextField(name, value) {
+    if (value === undefined || value === null || value === '') return;
+    var el = document.querySelector('[name="' + name + '"]');
+    if (!el) return;
+    if (el.type === 'checkbox' || el.type === 'radio') return;
+    el.value = value;
+    el.classList.add('autofilled');
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function setCheckGroup(name, values) {
+    if (!values) return;
+    var arr = Array.isArray(values) ? values : [values];
+    arr.forEach(function(v) {
+      if (!v) return;
+      var el = document.querySelector('input[name="' + name + '"][value="' + CSS.escape(v) + '"]');
+      if (el) {
+        el.checked = true;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  }
+
+  function setRadioGroup(name, value) {
+    if (!value) return;
+    var el = document.querySelector('input[name="' + name + '"][value="' + CSS.escape(value) + '"]');
+    if (el) {
+      el.checked = true;
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+
+  function populateForm(data) {
+    ['name', 'company', 'year', 'website', 'country', 'description',
+     'sector_other', 'goal_other', 'region_other',
+     'past_grants', 'deadline', 'notes'].forEach(function(f) {
+      setTextField(f, data[f]);
+    });
+    setCheckGroup('sector', data.sector);
+    setCheckGroup('goal', data.goal);
+    setCheckGroup('region', data.region);
+    setRadioGroup('stage', data.stage);
+    setRadioGroup('funding', data.funding);
+    setRadioGroup('intl', data.intl);
+    updateProgress();
+  }
+
+  async function analyzeOnePager() {
+    var fileInput = document.getElementById('onePagerInput');
+    var file = fileInput.files[0];
+    var statusEl = document.getElementById('uploadStatus');
+    var btn = document.getElementById('analyzeBtn');
+
+    if (!file) {
+      statusEl.textContent = '⚠ יש לבחור קובץ קודם';
+      statusEl.className = 'upload-status error';
+      return;
+    }
+
+    btn.disabled = true;
+    statusEl.textContent = 'מנתח את המסמך... (עד כ-15 שניות)';
+    statusEl.className = 'upload-status active';
+
+    try {
+      var fd = new FormData();
+      fd.append('file', file);
+
+      var res = await fetch(ANALYZE_URL, { method: 'POST', body: fd });
+      var json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || 'שגיאה בניתוח המסמך');
+      }
+
+      pendingExtractedData = json.data;
+      statusEl.textContent = '✓ הניתוח הושלם';
+      statusEl.className = 'upload-status success';
+      renderReviewPanel(json.data);
+
+    } catch (err) {
+      statusEl.textContent = '⚠ ' + (err.message || 'שגיאה בניתוח המסמך') + ' — אפשר להמשיך למלא ידנית';
+      statusEl.className = 'upload-status error';
+    } finally {
+      btn.disabled = false;
     }
   }
 </script>
