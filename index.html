@@ -411,25 +411,26 @@
     errEl.style.display = 'none';
 
     try {
-      var encoded = encodeURIComponent(JSON.stringify(collectData()));
-      var url = APPS_SCRIPT_URL + '?data=' + encoded;
+      // POST עם text/plain — בקשה "פשוטה" בלי preflight, בלי מגבלת אורך URL
+      var res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(collectData()),
+        redirect: 'follow'
+      });
+      var result = await res.json();
+      if (!result || !result.ok) {
+        throw new Error('server: ' + (result && result.error));
+      }
 
-      // פותחים iframe נסתר — עוקף CORS לחלוטין
-      var iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = url;
-      document.body.appendChild(iframe);
-
-      // מחכים שנייה ומציגים הצלחה
-      setTimeout(function() {
-        document.getElementById('mainForm').style.display = 'none';
-        document.getElementById('successScreen').style.display = 'block';
-        document.getElementById('progressFill').style.width = '100%';
-        document.getElementById('progressLabel').textContent = 'הושלם!';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 1500);
+      document.getElementById('mainForm').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('progressLabel').textContent = 'הושלם!';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
+      console.error('submit failed', err);
       errEl.style.display = 'block';
       btn.disabled = false;
       btn.textContent = 'שלח שאלון ←';
